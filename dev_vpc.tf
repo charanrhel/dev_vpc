@@ -1,15 +1,8 @@
-/* terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "4.50.0"
-    }
-  }
-} */
 
 data "aws_availability_zones" "available" {
   state = "available"
 }
+
 # VPC creation
 resource "aws_vpc" "dev_vpc" {
   cidr_block           = "192.0.0.0/16"
@@ -22,7 +15,6 @@ resource "aws_vpc" "dev_vpc" {
 }
 
 # Internet Gateway
-
 resource "aws_internet_gateway" "dev_igw" {
   vpc_id = aws_vpc.dev_vpc.id
 
@@ -32,7 +24,6 @@ resource "aws_internet_gateway" "dev_igw" {
 }
 
 #Subnets
-
 resource "aws_subnet" "dev_public" {
   count                   = length(data.aws_availability_zones.available.names)
   vpc_id                  = aws_vpc.dev_vpc.id
@@ -66,6 +57,7 @@ resource "aws_subnet" "dev_data" {
     Name = "dev_data_${count.index + 1}_subnet"
   }
 }
+
 #nat_gateway
 resource "aws_eip" "dev_eip" {
   vpc = "true"
@@ -88,7 +80,6 @@ resource "aws_nat_gateway" "dev_nat" {
 }
 
 #route_table
-
 resource "aws_route_table" "dev_public" {
   vpc_id = aws_vpc.dev_vpc.id
 
@@ -116,7 +107,6 @@ resource "aws_route_table" "dev_private" {
 }
 
 #route table association
-
 resource "aws_route_table_association" "dev_public" {
   count          = length(aws_subnet.dev_public[*].id)
   route_table_id = aws_route_table.dev_public.id
