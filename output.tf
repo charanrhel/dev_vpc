@@ -10,3 +10,7 @@ output "nat-gw" {
   value = aws_nat_gateway.dev_nat.connectivity_type
   // value = aws_nat_gateway.dev_nat.arn
 }
+
+/* output "my-ip" {
+  value = data.external.myipaddr.result.ip
+} */
